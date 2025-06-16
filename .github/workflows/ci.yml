@@ -40,6 +40,9 @@ jobs:
         with:
           node-version: 20
           cache: npm
+          cache-dependency-path: |
+            Snowflake.Common/package-lock.json
+            Snowflake.ConnectGithubAction/package-lock.json
 
       - name: Build Snowflake.Common
         working-directory: Snowflake.Common
