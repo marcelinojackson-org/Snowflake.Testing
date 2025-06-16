@@ -1,0 +1,74 @@
+name: Snowflake Suite CI
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout orchestration repo
+        uses: actions/checkout@v4
+
+      - name: Checkout Snowflake.Common
+        uses: actions/checkout@v4
+        with:
+          repository: marcelinojackson-org/Snowflake.Common
+          path: Snowflake.Common
+          token: ${{ secrets.SNOWFLAKE_GITHUB_PAT }}
+
+      - name: Checkout Snowflake.ConnectGithubAction
+        uses: actions/checkout@v4
+        with:
+          repository: marcelinojackson-org/Snowflake.ConnectGithubAction
+          path: Snowflake.ConnectGithubAction
+          token: ${{ secrets.SNOWFLAKE_GITHUB_PAT }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Build Snowflake.Common
+        working-directory: Snowflake.Common
+        run: |
+          npm ci
+          npm test
+          npm run build
+          npm link
+
+      - name: Replace Snowflake SDK with mock
+        run: |
+          rm -rf Snowflake.Common/node_modules/snowflake-sdk
+          mkdir -p Snowflake.Common/node_modules
+          ln -s $GITHUB_WORKSPACE/ci/mocks/node_modules/snowflake-sdk \
+                Snowflake.Common/node_modules/snowflake-sdk
+
+      - name: Build Snowflake.ConnectGithubAction
+        working-directory: Snowflake.ConnectGithubAction
+        run: |
+          npm ci --ignore-scripts
+          npm link @marcelinojackson-org/snowflake-common
+          npm run build
+
+      - name: Smoke test action with mock SDK
+        working-directory: Snowflake.ConnectGithubAction
+        env:
+          NODE_PATH: ${{ github.workspace }}/ci/mocks/node_modules
+          SNOWFLAKE_ACCOUNT: dummy-account
+          SNOWFLAKE_USER: dummy-user
+          SNOWFLAKE_PASSWORD: dummy-password
+          SNOWFLAKE_ROLE: DUMMY_ROLE
+          SNOWFLAKE_LOG_LEVEL: VERBOSE
+        run: node dist/main.js
