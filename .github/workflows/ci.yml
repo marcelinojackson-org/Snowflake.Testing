@@ -71,7 +71,7 @@ jobs:
           SNOWFLAKE_DATABASE: ${{ vars.SNOWFLAKE_DATABASE }}
           SNOWFLAKE_SCHEMA: ${{ vars.SNOWFLAKE_SCHEMA }}
           SNOWFLAKE_LOG_LEVEL: MINIMAL
-        run: node dist/main.js
+        run: node dist/snowflake-connect.js
 
       - name: Run SELECT CURRENT_USER via runSql helper
         working-directory: Snowflake.ConnectGithubAction
@@ -86,4 +86,4 @@ jobs:
           SNOWFLAKE_SCHEMA: ${{ vars.SNOWFLAKE_SCHEMA }}
           SNOWFLAKE_LOG_LEVEL: MINIMAL
           SNOWFLAKE_SQL: 'select current_user() as current_user'
-        run: node dist/run-sql.js
+        run: node dist/snowflake-runsql.js
