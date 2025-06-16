@@ -52,13 +52,6 @@ jobs:
           npm run build
           npm link
 
-      - name: Replace Snowflake SDK with mock
-        run: |
-          rm -rf Snowflake.Common/node_modules/snowflake-sdk
-          mkdir -p Snowflake.Common/node_modules
-          ln -s $GITHUB_WORKSPACE/ci/mocks/node_modules/snowflake-sdk \
-                Snowflake.Common/node_modules/snowflake-sdk
-
       - name: Build Snowflake.ConnectGithubAction
         working-directory: Snowflake.ConnectGithubAction
         run: |
@@ -69,10 +62,9 @@ jobs:
       - name: Smoke test action with mock SDK
         working-directory: Snowflake.ConnectGithubAction
         env:
-          NODE_PATH: ${{ github.workspace }}/ci/mocks/node_modules
           SNOWFLAKE_ACCOUNT: dummy-account
           SNOWFLAKE_USER: dummy-user
           SNOWFLAKE_PASSWORD: dummy-password
           SNOWFLAKE_ROLE: DUMMY_ROLE
           SNOWFLAKE_LOG_LEVEL: VERBOSE
-        run: node dist/main.js
+        run: node -r ../ci/mock-snowflake dist/main.js
