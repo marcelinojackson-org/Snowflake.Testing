@@ -59,12 +59,16 @@ jobs:
           npm link @marcelinojackson-org/snowflake-common
           npm run build
 
-      - name: Smoke test action with mock SDK
+      - name: Smoke test action against Snowflake
         working-directory: Snowflake.ConnectGithubAction
         env:
-          SNOWFLAKE_ACCOUNT: dummy-account
-          SNOWFLAKE_USER: dummy-user
-          SNOWFLAKE_PASSWORD: dummy-password
-          SNOWFLAKE_ROLE: DUMMY_ROLE
+          SNOWFLAKE_ACCOUNT: ${{ secrets.SNOWFLAKE_ACCOUNT }}
+          SNOWFLAKE_ACCOUNT_URL: ${{ secrets.SNOWFLAKE_ACCOUNT_URL }}
+          SNOWFLAKE_USER: ${{ secrets.SNOWFLAKE_USER }}
+          SNOWFLAKE_PASSWORD: ${{ secrets.SNOWFLAKE_PASSWORD }}
+          SNOWFLAKE_ROLE: ${{ secrets.SNOWFLAKE_ROLE }}
+          SNOWFLAKE_WAREHOUSE: ${{ secrets.SNOWFLAKE_WAREHOUSE }}
+          SNOWFLAKE_DATABASE: ${{ secrets.SNOWFLAKE_DATABASE }}
+          SNOWFLAKE_SCHEMA: ${{ secrets.SNOWFLAKE_SCHEMA }}
           SNOWFLAKE_LOG_LEVEL: VERBOSE
-        run: node -r ../ci/mock-snowflake dist/main.js
+        run: node dist/main.js
