@@ -35,6 +35,13 @@ jobs:
           path: Snowflake.ConnectGithubAction
           token: ${{ secrets.SNOWFLAKE_GITHUB_PAT }}
 
+      - name: Checkout Snowflake.RunSQLAction
+        uses: actions/checkout@v4
+        with:
+          repository: marcelinojackson-org/Snowflake.RunSQLAction
+          path: Snowflake.RunSQLAction
+          token: ${{ secrets.SNOWFLAKE_GITHUB_PAT }}
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -43,6 +50,7 @@ jobs:
           cache-dependency-path: |
             Snowflake.Common/package-lock.json
             Snowflake.ConnectGithubAction/package-lock.json
+            Snowflake.RunSQLAction/package-lock.json
 
       - name: Build Snowflake.Common
         working-directory: Snowflake.Common
@@ -54,6 +62,13 @@ jobs:
 
       - name: Build Snowflake.ConnectGithubAction
         working-directory: Snowflake.ConnectGithubAction
+        run: |
+          npm ci --ignore-scripts
+          npm link @marcelinojackson-org/snowflake-common
+          npm run build
+
+      - name: Build Snowflake.RunSQLAction
+        working-directory: Snowflake.RunSQLAction
         run: |
           npm ci --ignore-scripts
           npm link @marcelinojackson-org/snowflake-common
@@ -74,7 +89,7 @@ jobs:
         run: node dist/snowflake-connect.js
 
       - name: Run select current_schema
-        working-directory: Snowflake.ConnectGithubAction
+        working-directory: Snowflake.RunSQLAction
         env:
           RUN_SQL_STATEMENT: 'select current_schema() as current_schema'
           SNOWFLAKE_ACCOUNT: ${{ vars.SNOWFLAKE_ACCOUNT }}
@@ -89,7 +104,7 @@ jobs:
         run: node dist/snowflake-runsql.js
 
       - name: List tables for current schema
-        working-directory: Snowflake.ConnectGithubAction
+        working-directory: Snowflake.RunSQLAction
         env:
           RUN_SQL_STATEMENT: ${{ vars.SNOWFLAKE_TABLES_SQL || 'select * from information_schema.tables where table_schema = current_schema() order by table_name LIMIT 3' }}
           SNOWFLAKE_ACCOUNT: ${{ vars.SNOWFLAKE_ACCOUNT }}
