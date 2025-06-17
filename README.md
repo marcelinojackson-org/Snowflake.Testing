@@ -1,0 +1,32 @@
+## Snowflake Testing Utilities
+
+This repo hosts CI workflows plus helper scripts that make it easy to validate cross-repo changes before pushing.
+
+### scripts/validate-common.sh
+
+- Builds and tests `../Snowflake.Common`.
+- Uses your local `SNOWFLAKE_*` env vars (if set) to run a live smoke test via the compiled library.
+- Usage:
+
+  ```bash
+  ./scripts/validate-common.sh
+  # or override locations / SQL
+  COMMON_REPO_DIR=/path/to/Snowflake.Common \
+  VALIDATION_SQL='select current_warehouse() as current_warehouse' \
+  ./scripts/validate-common.sh
+  ```
+
+### scripts/build-runsql-release.sh
+
+- Rebuilds `Snowflake.Common`, links it, and bundles `../Snowflake.RunSQLAction` so the action is ready for tagging/publishing.
+- Usage:
+
+  ```bash
+  ./scripts/build-runsql-release.sh
+  # override repo locations if needed
+  COMMON_REPO_DIR=~/dev/Snowflake.Common \
+  RUNSQL_REPO_DIR=~/dev/Snowflake.RunSQLAction \
+  ./scripts/build-runsql-release.sh
+  ```
+
+Both scripts assume this repo sits alongside `Snowflake.Common` and `Snowflake.RunSQLAction` (matching the current layout under `/Users/marc/dev/opensource/Snowflake`). Adjust the env vars if your workspace differs.
