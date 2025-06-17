@@ -10,10 +10,11 @@ jobs:
   runsql-marketplace:
     runs-on: ubuntu-latest
     steps:
-      - name: Execute Select current_schema via published action
-        uses: marcelinojackson-org/Snowflake.RunSQLAction@v1.0.2
+      - name: Execute select current_schema via published action
+        uses: marcelinojackson-org/Snowflake.RunSQLAction@v1.0.3
         with:
           sql: "select current_schema() as CURRENT_SCHEMA"
+          return-rows: "5"
         env:
           SNOWFLAKE_ACCOUNT: ${{ vars.SNOWFLAKE_ACCOUNT }}
           SNOWFLAKE_ACCOUNT_URL: ${{ vars.SNOWFLAKE_ACCOUNT_URL }}
