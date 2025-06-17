@@ -73,7 +73,7 @@ jobs:
           SNOWFLAKE_LOG_LEVEL: MINIMAL
         run: node dist/snowflake-connect.js
 
-      - name: Run select current_user
+      - name: Run select current_schema
         working-directory: Snowflake.ConnectGithubAction
         env:
           RUN_SQL_STATEMENT: 'select current_schema() as current_schema'
