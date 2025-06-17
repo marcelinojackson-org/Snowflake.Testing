@@ -2,8 +2,6 @@ name: Snowflake RunSQL Marketplace Check
 
 on:
   workflow_dispatch:
-  schedule:
-    - cron: "0 6 * * *"
 
 permissions:
   contents: read
@@ -12,10 +10,10 @@ jobs:
   runsql-marketplace:
     runs-on: ubuntu-latest
     steps:
-      - name: Execute select current_user via published action
-        uses: marcelinojackson-org/Snowflake.RunSQLAction@v1
+      - name: Execute Select current_schema via published action
+        uses: marcelinojackson-org/Snowflake.RunSQLAction@v1.0.2
         with:
-          sql: "select current_user() as current_user"
+          sql: "select current_schema() as CURRENT_SCHEMA"
         env:
           SNOWFLAKE_ACCOUNT: ${{ vars.SNOWFLAKE_ACCOUNT }}
           SNOWFLAKE_ACCOUNT_URL: ${{ vars.SNOWFLAKE_ACCOUNT_URL }}
