@@ -2,6 +2,15 @@ name: Snowflake RunSQL Marketplace Check
 
 on:
   workflow_dispatch:
+    inputs:
+      sql:
+        description: 'SQL statement to execute via RunSQLAction'
+        required: false
+        default: "show grants to role ACCOUNTADMIN"
+      return_rows:
+        description: 'Maximum rows to return (1-1000)'
+        required: false
+        default: "100"
 
 permissions:
   contents: read
@@ -13,8 +22,8 @@ jobs:
       - name: Execute select current_schema via published action
         uses: marcelinojackson-org/Snowflake.RunSQLAction@v1.0.3
         with:
-          sql: "select current_schema() as CURRENT_SCHEMA"
-          return-rows: "5"
+          sql: ${{ inputs.sql }}
+          return-rows: ${{ inputs.return_rows }}
         env:
           SNOWFLAKE_ACCOUNT: ${{ vars.SNOWFLAKE_ACCOUNT }}
           SNOWFLAKE_ACCOUNT_URL: ${{ vars.SNOWFLAKE_ACCOUNT_URL }}
