@@ -78,7 +78,7 @@ jobs:
           npm link @marcelinojackson-org/snowflake-common
           npm run build
 
-      - name: Smoke test connection
+      - name: SmokeTest Snowflake Connection
         working-directory: Snowflake.ConnectGithubAction
         env:
           SNOWFLAKE_ACCOUNT: ${{ vars.SNOWFLAKE_ACCOUNT }}
@@ -92,7 +92,7 @@ jobs:
           SNOWFLAKE_LOG_LEVEL: MINIMAL
         run: node dist/snowflake-connect.js
 
-      - name: Run select current_schema
+      - name: RUNSQL - Get current schema
         working-directory: Snowflake.RunSQLAction
         env:
           RUN_SQL_STATEMENT: 'select current_schema() as current_schema'
@@ -107,7 +107,7 @@ jobs:
           SNOWFLAKE_LOG_LEVEL: MINIMAL
         run: node dist/snowflake-runsql.js
 
-      - name: List tables for current schema
+      - name: RUNSQL - List 3 tables in current schema
         working-directory: Snowflake.RunSQLAction
         env:
           RUN_SQL_STATEMENT: ${{ vars.SNOWFLAKE_TABLES_SQL || 'select * from information_schema.tables where table_schema = current_schema() order by table_name LIMIT 3' }}
