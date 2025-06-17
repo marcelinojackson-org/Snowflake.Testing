@@ -76,7 +76,7 @@ jobs:
       - name: Run select current_user
         working-directory: Snowflake.ConnectGithubAction
         env:
-          RUN_SQL_STATEMENT: 'select current_user() as current_user'
+          RUN_SQL_STATEMENT: 'select current_schema() as current_schema'
           SNOWFLAKE_ACCOUNT: ${{ vars.SNOWFLAKE_ACCOUNT }}
           SNOWFLAKE_ACCOUNT_URL: ${{ vars.SNOWFLAKE_ACCOUNT_URL }}
           SNOWFLAKE_USER: ${{ vars.SNOWFLAKE_USER }}
