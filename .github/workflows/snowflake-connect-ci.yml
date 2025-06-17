@@ -42,6 +42,10 @@ jobs:
           path: Snowflake.RunSQLAction
           token: ${{ secrets.SNOWFLAKE_GITHUB_PAT }}
 
+      - name: Configure git auth for private deps
+        run: |
+          git config --global url."https://x-access-token:${{ secrets.SNOWFLAKE_GITHUB_PAT }}@github.com/".insteadOf "https://github.com/"
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
