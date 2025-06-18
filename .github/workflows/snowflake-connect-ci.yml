@@ -111,7 +111,7 @@ jobs:
       - name: RUNSQL - List tables in current schema
         working-directory: Snowflake.RunSQLAction
         env:
-          RUN_SQL_STATEMENT: ${{ vars.SNOWFLAKE_TABLES_SQL || 'select * from information_schema.tables where table_schema = current_schema() order by table_name LIMIT 3' }}
+          RUN_SQL_STATEMENT: ${{ vars.SNOWFLAKE_TABLES_SQL || 'select * from information_schema.tables where table_schema = current_schema() order by table_name' }}
           RUN_SQL_RETURN_ROWS: '10'
           SNOWFLAKE_ACCOUNT: ${{ vars.SNOWFLAKE_ACCOUNT }}
           SNOWFLAKE_ACCOUNT_URL: ${{ vars.SNOWFLAKE_ACCOUNT_URL }}
