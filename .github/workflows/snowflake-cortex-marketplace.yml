@@ -1,0 +1,30 @@
+name: Snowflake Cortex Marketplace Check
+
+on:
+  workflow_dispatch:
+    inputs:
+      query:
+        description: 'Natural language query'
+        required: false
+        default: "Find orders with complaints about delivery"
+      limit:
+        description: 'Maximum hits to request'
+        required: false
+        default: "3"
+
+permissions:
+  contents: read
+
+jobs:
+  cortex-marketplace:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run Cortex Search via published action
+        uses: marcelinojackson-org/Snowflake.CortexAI.Search@v1.0.2
+        with:
+          service-name: ${{ vars.SEARCH_SERVICE }}
+          query: ${{ inputs.query }}
+          limit: ${{ inputs.limit }}
+        env:
+          SNOWFLAKE_ACCOUNT_URL: ${{ vars.SNOWFLAKE_ACCOUNT_URL }}
+          SNOWFLAKE_PAT: ${{ secrets.SNOWFLAKE_PAT || secrets.SNOWFLAKE_PASSWORD }}
