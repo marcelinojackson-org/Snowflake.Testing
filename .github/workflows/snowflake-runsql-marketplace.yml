@@ -10,7 +10,7 @@ on:
       return_rows:
         description: 'Maximum rows to return (1-1000)'
         required: false
-        default: "100"
+        default: "10"
       persist_results:
         description: 'Persist full CSV results + metadata artifact (true/false)'
         required: false

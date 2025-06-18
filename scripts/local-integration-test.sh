@@ -6,7 +6,7 @@ COMMON_REPO_DIR="${COMMON_REPO_DIR:-"$REPO_ROOT/../Snowflake.Common"}"
 RUNSQL_REPO_DIR="${RUNSQL_REPO_DIR:-"$REPO_ROOT/../Snowflake.RunSQLAction"}"
 SMOKE_SQL="${SMOKE_SQL:-"select current_schema() as current_schema"}"
 ACTION_SQL="${ACTION_SQL:-"select * from information_schema.tables where table_schema = current_schema()"}"
-ACTION_PERSIST_RESULTS="${ACTION_PERSIST_RESULTS:-true}"
+ACTION_PERSIST_RESULTS="${ACTION_PERSIST_RESULTS:-false}"
 ACTION_RESULT_FILENAME="${ACTION_RESULT_FILENAME:-snowflake-result.csv}"
 ACTION_RESULT_DIR="${ACTION_RESULT_DIR:-"$RUNSQL_REPO_DIR/snowflake-results"}"
 
@@ -80,6 +80,7 @@ RUN_SQL_STATEMENT="$ACTION_SQL" \
 RUN_SQL_PERSIST_RESULTS="$ACTION_PERSIST_RESULTS" \
 RUN_SQL_RESULT_FILENAME="$ACTION_RESULT_FILENAME" \
 RUN_SQL_RESULT_DIR="$ACTION_RESULT_DIR" \
+RUN_SQL_RETURN_ROWS=10 \
 node dist/snowflake-runsql.js
 popd >/dev/null
 
