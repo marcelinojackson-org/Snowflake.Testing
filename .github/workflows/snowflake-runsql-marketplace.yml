@@ -11,6 +11,14 @@ on:
         description: 'Maximum rows to return (1-1000)'
         required: false
         default: "100"
+      persist_results:
+        description: 'Persist full CSV results + metadata artifact (true/false)'
+        required: false
+        default: "true"
+      result_filename:
+        description: 'Base filename to use when persisting results (query id is appended)'
+        required: false
+        default: "snowflake-result.csv"
 
 permissions:
   contents: read
@@ -19,11 +27,14 @@ jobs:
   runsql-marketplace:
     runs-on: ubuntu-latest
     steps:
-      - name: Execute select current_schema via published action
-        uses: marcelinojackson-org/Snowflake.RunSQLAction@v1.0.3
+      - name: Execute Snowflake.RunSQLAction
+        id: runsql
+        uses: marcelinojackson-org/Snowflake.RunSQLAction@v1.1.0
         with:
           sql: ${{ inputs.sql }}
           return-rows: ${{ inputs.return_rows }}
+          persist-results: ${{ inputs.persist_results }}
+          result-filename: ${{ inputs.result_filename }}
         env:
           SNOWFLAKE_ACCOUNT: ${{ vars.SNOWFLAKE_ACCOUNT }}
           SNOWFLAKE_ACCOUNT_URL: ${{ vars.SNOWFLAKE_ACCOUNT_URL }}
@@ -34,3 +45,12 @@ jobs:
           SNOWFLAKE_DATABASE: ${{ vars.SNOWFLAKE_DATABASE }}
           SNOWFLAKE_SCHEMA: ${{ vars.SNOWFLAKE_SCHEMA }}
           SNOWFLAKE_LOG_LEVEL: MINIMAL
+
+      - name: Upload Snowflake result artifact
+        if: ${{ steps.runsql.outputs.result-file != '' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: snowflake-result
+          path: |
+            ${{ steps.runsql.outputs.result-file }}
+            ${{ steps.runsql.outputs.result-metadata-file }}

@@ -30,3 +30,16 @@ This repo hosts CI workflows plus helper scripts that make it easy to validate c
   ```
 
 Both scripts assume this repo sits alongside `Snowflake.Common` and `Snowflake.RunSQLAction` (matching the current layout under `/Users/marc/dev/opensource/Snowflake`). Adjust the env vars if your workspace differs.
+
+### scripts/local-integration-test.sh
+
+- Full end-to-end local validation: builds/links the common lib, runs a smoke query through it, rebuilds the RunSQL action, and executes the bundled action (`node dist/snowflake-runsql.js`) using your existing `SNOWFLAKE_*` env vars.
+- Usage:
+
+  ```bash
+  ./scripts/local-integration-test.sh
+  # customize SQL statements if needed
+  SMOKE_SQL='select current_database()' \
+  ACTION_SQL='show tables limit 5' \
+  ./scripts/local-integration-test.sh
+  ```

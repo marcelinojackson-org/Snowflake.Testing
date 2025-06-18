@@ -1,4 +1,4 @@
-name: Snowflake Suite CI
+name: Snowflake Local Validation
 
 on:
   workflow_dispatch:
@@ -15,31 +15,24 @@ defaults:
     shell: bash
 
 jobs:
-  build:
+  local-validation:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout orchestration repo
+      - name: Checkout Snowflake.Testing
         uses: actions/checkout@v4
 
       - name: Checkout Snowflake.Common
         uses: actions/checkout@v4
         with:
           repository: marcelinojackson-org/Snowflake.Common
-          path: Snowflake.Common
-          token: ${{ secrets.SNOWFLAKE_GITHUB_PAT }}
-
-      - name: Checkout Snowflake.ConnectGithubAction
-        uses: actions/checkout@v4
-        with:
-          repository: marcelinojackson-org/Snowflake.ConnectGithubAction
-          path: Snowflake.ConnectGithubAction
+          path: deps/Snowflake.Common
           token: ${{ secrets.SNOWFLAKE_GITHUB_PAT }}
 
       - name: Checkout Snowflake.RunSQLAction
         uses: actions/checkout@v4
         with:
           repository: marcelinojackson-org/Snowflake.RunSQLAction
-          path: Snowflake.RunSQLAction
+          path: deps/Snowflake.RunSQLAction
           token: ${{ secrets.SNOWFLAKE_GITHUB_PAT }}
 
       - name: Configure git auth for private deps
@@ -52,35 +45,14 @@ jobs:
           node-version: 20
           cache: npm
           cache-dependency-path: |
-            Snowflake.Common/package-lock.json
-            Snowflake.ConnectGithubAction/package-lock.json
-            Snowflake.RunSQLAction/package-lock.json
+            deps/Snowflake.Common/package-lock.json
+            deps/Snowflake.RunSQLAction/package-lock.json
 
-      - name: Build Snowflake.Common
-        working-directory: Snowflake.Common
-        run: |
-          npm ci
-          npm test
-          npm run build
-          npm link
-
-      - name: Build Snowflake.ConnectGithubAction
-        working-directory: Snowflake.ConnectGithubAction
-        run: |
-          npm ci --ignore-scripts
-          npm link @marcelinojackson-org/snowflake-common
-          npm run build
-
-      - name: Build Snowflake.RunSQLAction
-        working-directory: Snowflake.RunSQLAction
-        run: |
-          npm ci --ignore-scripts
-          npm link @marcelinojackson-org/snowflake-common
-          npm run build
-
-      - name: SmokeTest Snowflake Connection
-        working-directory: Snowflake.ConnectGithubAction
+      - name: Run local integration harness
+        run: ./scripts/local-integration-test.sh
         env:
+          COMMON_REPO_DIR: ${{ github.workspace }}/deps/Snowflake.Common
+          RUNSQL_REPO_DIR: ${{ github.workspace }}/deps/Snowflake.RunSQLAction
           SNOWFLAKE_ACCOUNT: ${{ vars.SNOWFLAKE_ACCOUNT }}
           SNOWFLAKE_ACCOUNT_URL: ${{ vars.SNOWFLAKE_ACCOUNT_URL }}
           SNOWFLAKE_USER: ${{ vars.SNOWFLAKE_USER }}
@@ -90,36 +62,3 @@ jobs:
           SNOWFLAKE_DATABASE: ${{ vars.SNOWFLAKE_DATABASE }}
           SNOWFLAKE_SCHEMA: ${{ vars.SNOWFLAKE_SCHEMA }}
           SNOWFLAKE_LOG_LEVEL: MINIMAL
-        run: node dist/snowflake-connect.js
-
-      - name: RUNSQL - Get current schema
-        working-directory: Snowflake.RunSQLAction
-        env:
-          RUN_SQL_STATEMENT: 'select current_schema() as current_schema'
-          RUN_SQL_RETURN_ROWS: '5'
-          SNOWFLAKE_ACCOUNT: ${{ vars.SNOWFLAKE_ACCOUNT }}
-          SNOWFLAKE_ACCOUNT_URL: ${{ vars.SNOWFLAKE_ACCOUNT_URL }}
-          SNOWFLAKE_USER: ${{ vars.SNOWFLAKE_USER }}
-          SNOWFLAKE_PASSWORD: ${{ secrets.SNOWFLAKE_PASSWORD || secrets.SNOWFLAKE_PAT }}
-          SNOWFLAKE_ROLE: ${{ vars.SNOWFLAKE_ROLE }}
-          SNOWFLAKE_WAREHOUSE: ${{ vars.SNOWFLAKE_WAREHOUSE }}
-          SNOWFLAKE_DATABASE: ${{ vars.SNOWFLAKE_DATABASE }}
-          SNOWFLAKE_SCHEMA: ${{ vars.SNOWFLAKE_SCHEMA }}
-          SNOWFLAKE_LOG_LEVEL: MINIMAL
-        run: node dist/snowflake-runsql.js
-
-      - name: RUNSQL - List tables in current schema
-        working-directory: Snowflake.RunSQLAction
-        env:
-          RUN_SQL_STATEMENT: ${{ vars.SNOWFLAKE_TABLES_SQL || 'select * from information_schema.tables where table_schema = current_schema() order by table_name' }}
-          RUN_SQL_RETURN_ROWS: '100'
-          SNOWFLAKE_ACCOUNT: ${{ vars.SNOWFLAKE_ACCOUNT }}
-          SNOWFLAKE_ACCOUNT_URL: ${{ vars.SNOWFLAKE_ACCOUNT_URL }}
-          SNOWFLAKE_USER: ${{ vars.SNOWFLAKE_USER }}
-          SNOWFLAKE_PASSWORD: ${{ secrets.SNOWFLAKE_PASSWORD || secrets.SNOWFLAKE_PAT }}
-          SNOWFLAKE_ROLE: ${{ vars.SNOWFLAKE_ROLE }}
-          SNOWFLAKE_WAREHOUSE: ${{ vars.SNOWFLAKE_WAREHOUSE }}
-          SNOWFLAKE_DATABASE: ${{ vars.SNOWFLAKE_DATABASE }}
-          SNOWFLAKE_SCHEMA: ${{ vars.SNOWFLAKE_SCHEMA }}
-          SNOWFLAKE_LOG_LEVEL: MINIMAL
-        run: node dist/snowflake-runsql.js
