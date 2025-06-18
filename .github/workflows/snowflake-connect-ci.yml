@@ -35,6 +35,13 @@ jobs:
           path: deps/Snowflake.RunSQLAction
           token: ${{ secrets.SNOWFLAKE_GITHUB_PAT }}
 
+      - name: Checkout Snowflake.CortexAI.Search
+        uses: actions/checkout@v4
+        with:
+          repository: marcelinojackson-org/Snowflake.CortexAI.Search
+          path: deps/Snowflake.CortexAI.Search
+          token: ${{ secrets.SNOWFLAKE_GITHUB_PAT }}
+
       - name: Configure git auth for private deps
         run: |
           git config --global url."https://x-access-token:${{ secrets.SNOWFLAKE_GITHUB_PAT }}@github.com/".insteadOf "https://github.com/"
@@ -47,6 +54,7 @@ jobs:
           cache-dependency-path: |
             deps/Snowflake.Common/package-lock.json
             deps/Snowflake.RunSQLAction/package-lock.json
+            deps/Snowflake.CortexAI.Search/package-lock.json
 
       - name: Run local integration harness
         run: ./scripts/local-integration-test.sh
@@ -62,3 +70,21 @@ jobs:
           SNOWFLAKE_DATABASE: ${{ vars.SNOWFLAKE_DATABASE }}
           SNOWFLAKE_SCHEMA: ${{ vars.SNOWFLAKE_SCHEMA }}
           SNOWFLAKE_LOG_LEVEL: MINIMAL
+
+      - name: Run local Cortex Search harness
+        run: ./scripts/local-cortex-search.sh
+        env:
+          COMMON_REPO_DIR: ${{ github.workspace }}/deps/Snowflake.Common
+          CORTEX_REPO_DIR: ${{ github.workspace }}/deps/Snowflake.CortexAI.Search
+          SNOWFLAKE_ACCOUNT_URL: ${{ vars.SNOWFLAKE_ACCOUNT_URL }}
+          SNOWFLAKE_PAT: ${{ secrets.SNOWFLAKE_PAT || secrets.SNOWFLAKE_PASSWORD }}
+          SEARCH_SERVICE: ${{ vars.SEARCH_SERVICE }}
+          SEARCH_QUERY: ${{ vars.SEARCH_QUERY }}
+          SEARCH_LIMIT: ${{ vars.SEARCH_LIMIT }}
+          SEARCH_FILTER: ${{ vars.SEARCH_FILTER }}
+          SEARCH_FIELDS: ${{ vars.SEARCH_FIELDS }}
+          SEARCH_OFFSET: ${{ vars.SEARCH_OFFSET }}
+          SEARCH_INCLUDE_SCORES: ${{ vars.SEARCH_INCLUDE_SCORES }}
+          SEARCH_SCORE_THRESHOLD: ${{ vars.SEARCH_SCORE_THRESHOLD }}
+          SEARCH_RERANKER: ${{ vars.SEARCH_RERANKER }}
+          SEARCH_RANKING_PROFILE: ${{ vars.SEARCH_RANKING_PROFILE }}
