@@ -1,4 +1,4 @@
-name: Snowflake RunSQL Marketplace Check
+name: Snowflake.RunSQL- Marketplace Action
 
 on:
   workflow_dispatch:

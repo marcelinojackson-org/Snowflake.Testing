@@ -1,4 +1,4 @@
-name: Snowflake Local Validation
+name: Snowflake.Actions - Local Integration Tests
 
 on:
   workflow_dispatch:
