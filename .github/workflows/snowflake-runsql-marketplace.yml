@@ -14,7 +14,7 @@ on:
       persist_results:
         description: 'Persist full CSV results + metadata artifact (true/false)'
         required: false
-        default: "true"
+        default: "false"
       result_filename:
         description: 'Base filename to use when persisting results (query id is appended)'
         required: false
