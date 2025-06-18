@@ -24,7 +24,7 @@ permissions:
   contents: read
 
 jobs:
-  runsql-marketplace:
+  runsql-action:
     runs-on: ubuntu-latest
     steps:
       - name: Execute Snowflake.RunSQLAction

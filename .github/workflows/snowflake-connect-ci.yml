@@ -15,7 +15,7 @@ defaults:
     shell: bash
 
 jobs:
-  local-validation:
+  local-integration-tests:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Snowflake.Testing

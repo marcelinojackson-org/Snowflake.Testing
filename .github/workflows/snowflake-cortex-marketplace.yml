@@ -16,7 +16,7 @@ permissions:
   contents: read
 
 jobs:
-  cortex-marketplace:
+  cortex-search:
     runs-on: ubuntu-latest
     steps:
       - name: Run Cortex Search via published action
