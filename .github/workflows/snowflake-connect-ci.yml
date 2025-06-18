@@ -1,4 +1,4 @@
-name: Snowflake.Actions - Local Integration Tests
+name: Snowflake.Actions-IntegrationTests
 
 on:
   workflow_dispatch:

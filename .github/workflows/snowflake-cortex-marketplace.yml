@@ -1,4 +1,4 @@
-name: Snowflake.Cortex.Search - Marketplace Action
+name: Snowflake.Cortex.SearchAction
 
 on:
   workflow_dispatch:
