@@ -20,7 +20,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Run Cortex Search via published action
-        uses: marcelinojackson-org/Snowflake.CortexAI.SearchAction@v1.0.2
+        uses: marcelinojackson-org/Snowflake.CortexAI.SearchAction@v1.0.3
         with:
           service-name: ${{ vars.SEARCH_SERVICE }}
           query: ${{ inputs.query }}
