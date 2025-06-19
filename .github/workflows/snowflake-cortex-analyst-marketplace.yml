@@ -1,4 +1,4 @@
-name: Snowflake Cortex Analyst Marketplace Check
+name: Snowflake.Cortex.AnalystAction
 
 on:
   workflow_dispatch:
@@ -12,11 +12,11 @@ permissions:
   contents: read
 
 jobs:
-  cortex-analyst-marketplace:
+  cortex-analyst:
     runs-on: ubuntu-latest
     steps:
       - name: Run Cortex Analyst via published action
-        uses: marcelinojackson-org/Snowflake.CortexAI.AnalystAction@v0.1.0
+        uses: marcelinojackson-org/Snowflake.CortexAI.AnalystAction@v1.0.1
         with:
           semantic-model-path: ${{ vars.SEMANTIC_MODEL_PATH }}
           message: ${{ inputs.message }}
