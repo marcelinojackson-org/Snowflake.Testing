@@ -49,6 +49,13 @@ jobs:
           path: deps/Snowflake.CortexAI.AnalystAction
           token: ${{ secrets.SNOWFLAKE_GITHUB_PAT }}
 
+      - name: Checkout Snowflake.CortexAI.AgentAction
+        uses: actions/checkout@v4
+        with:
+          repository: marcelinojackson-org/Snowflake.CortexAI.AgentAction
+          path: deps/Snowflake.CortexAI.AgentAction
+          token: ${{ secrets.SNOWFLAKE_GITHUB_PAT }}
+
       - name: Configure git auth for private deps
         run: |
           git config --global url."https://x-access-token:${{ secrets.SNOWFLAKE_GITHUB_PAT }}@github.com/".insteadOf "https://github.com/"
@@ -63,6 +70,7 @@ jobs:
             deps/Snowflake.RunSQLAction/package-lock.json
             deps/Snowflake.CortexAI.SearchAction/package-lock.json
             deps/Snowflake.CortexAI.AnalystAction/package-lock.json
+            deps/Snowflake.CortexAI.AgentAction/package-lock.json
 
       - name: Run local integration harness
         run: ./scripts/local-integration-test.sh
@@ -111,3 +119,18 @@ jobs:
           ANALYST_RESULT_FORMAT: ${{ vars.ANALYST_RESULT_FORMAT }}
           ANALYST_TEMPERATURE: ${{ vars.ANALYST_TEMPERATURE }}
           ANALYST_MAX_OUTPUT_TOKENS: ${{ vars.ANALYST_MAX_OUTPUT_TOKENS }}
+
+      - name: Run local Cortex Agent harness
+        run: ./scripts/local-cortex-agent.sh
+        env:
+          COMMON_REPO_DIR: ${{ github.workspace }}/deps/Snowflake.Common
+          AGENT_REPO_DIR: ${{ github.workspace }}/deps/Snowflake.CortexAI.AgentAction
+          SNOWFLAKE_ACCOUNT_URL: ${{ vars.SNOWFLAKE_ACCOUNT_URL }}
+          SNOWFLAKE_PAT: ${{ secrets.SNOWFLAKE_PAT || secrets.SNOWFLAKE_PASSWORD }}
+          AGENT_DATABASE: ${{ vars.AGENT_DATABASE }}
+          AGENT_SCHEMA: ${{ vars.AGENT_SCHEMA }}
+          AGENT_NAME: ${{ vars.AGENT_NAME }}
+          AGENT_MESSAGE: ${{ vars.AGENT_MESSAGE }}
+          AGENT_THREAD_ID: ${{ vars.AGENT_THREAD_ID }}
+          AGENT_PARENT_MESSAGE_ID: ${{ vars.AGENT_PARENT_MESSAGE_ID }}
+          AGENT_TOOL_CHOICE: ${{ vars.AGENT_TOOL_CHOICE }}

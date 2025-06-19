@@ -78,3 +78,21 @@ Both scripts assume this repo sits alongside `Snowflake.Common` and `Snowflake.R
   ANALYST_MESSAGE='Explain the dataset.' \
   ./scripts/local-cortex-analyst.sh
   ```
+
+### scripts/local-cortex-agent.sh
+
+- Builds `../Snowflake.Common` and `../Snowflake.CortexAI.AgentAction`, then runs two conversations against your agent:
+  1. **Basic** – single prompt routed to the provided agent coordinates.
+  2. **Advanced** – multi-message JSON payload, explicit thread ids, and a custom `tool-choice`.
+- Required env: `SNOWFLAKE_ACCOUNT_URL`, `SNOWFLAKE_PAT`, `AGENT_DATABASE`, `AGENT_SCHEMA`, `AGENT_NAME`.
+- Optional overrides: `AGENT_MESSAGE`, `AGENT_MESSAGES`, `AGENT_THREAD_ID`, `AGENT_PARENT_MESSAGE_ID`, `AGENT_TOOL_CHOICE`.
+- Usage:
+
+  ```bash
+  export AGENT_DATABASE='SNOWFLAKE_SAMPLE_CORTEXAI_DB'
+  export AGENT_SCHEMA='AGENTS'
+  export AGENT_NAME='EMPLOYEE_AGENT'
+  export SNOWFLAKE_ACCOUNT_URL='https://srsibdn-ura06696.snowflakecomputing.com'
+  export SNOWFLAKE_PAT='***'
+  ./scripts/local-cortex-agent.sh
+  ```

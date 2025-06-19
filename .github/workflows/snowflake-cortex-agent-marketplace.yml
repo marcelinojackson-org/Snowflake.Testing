@@ -1,0 +1,27 @@
+name: Snowflake.Cortex.AgentAction
+
+on:
+  workflow_dispatch:
+    inputs:
+      message:
+        description: 'Agent prompt'
+        required: false
+        default: 'ROLE:LEADER Provide a workforce status summary.'
+
+permissions:
+  contents: read
+
+jobs:
+  cortex-agent:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run Cortex Agent via published action
+        uses: marcelinojackson-org/Snowflake.CortexAI.AgentAction@v1.0.0
+        with:
+          agent-database: ${{ vars.AGENT_DATABASE }}
+          agent-schema: ${{ vars.AGENT_SCHEMA }}
+          agent-name: ${{ vars.AGENT_NAME }}
+          message: ${{ inputs.message }}
+        env:
+          SNOWFLAKE_ACCOUNT_URL: ${{ vars.SNOWFLAKE_ACCOUNT_URL }}
+          SNOWFLAKE_PAT: ${{ secrets.SNOWFLAKE_PAT || secrets.SNOWFLAKE_PASSWORD }}
