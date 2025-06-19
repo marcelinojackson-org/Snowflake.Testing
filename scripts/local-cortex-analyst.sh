@@ -60,7 +60,7 @@ popd >/dev/null
 
 log "Step 3/4: execute basic Cortex Analyst scenario (semantic model)"
 pushd "$ANALYST_REPO_DIR" >/dev/null
-ANALYST_MESSAGE_VALUE="${ANALYST_MESSAGE:-"Explain the dataset."}"
+ANALYST_MESSAGE_VALUE="${ANALYST_MESSAGE:-"How many employees were hired in 2021 and what is their current employment status?"}"
 ANALYST_INCLUDE_SQL_VALUE="${ANALYST_INCLUDE_SQL:-false}"
 ANALYST_RESULT_FORMAT_VALUE="${ANALYST_RESULT_FORMAT:-markdown}"
 ANALYST_TEMPERATURE_VALUE="${ANALYST_TEMPERATURE:-}"
