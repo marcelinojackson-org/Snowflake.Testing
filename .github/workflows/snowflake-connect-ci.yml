@@ -134,3 +134,15 @@ jobs:
           AGENT_THREAD_ID: ${{ vars.AGENT_THREAD_ID }}
           AGENT_PARENT_MESSAGE_ID: ${{ vars.AGENT_PARENT_MESSAGE_ID }}
           AGENT_TOOL_CHOICE: ${{ vars.AGENT_TOOL_CHOICE }}
+      - name: Run published Cortex Agent action
+        uses: marcelinojackson-org/Snowflake.CortexAI.AgentAction@v1.0.0
+        with:
+          agent-name: ${{ vars.AGENT_NAME }}
+          message: ${{ vars.AGENT_MESSAGE || 'ROLE:MANAGER Summarize employees who joined in the last 180 days. Provide aggregates and top 5 example employees.' }}
+          persist-results: true
+          persist-dir: ${{ runner.temp }}
+        env:
+          SNOWFLAKE_ACCOUNT_URL: ${{ vars.SNOWFLAKE_ACCOUNT_URL }}
+          SNOWFLAKE_PAT: ${{ secrets.SNOWFLAKE_PAT || secrets.SNOWFLAKE_PASSWORD }}
+          AGENT_DATABASE: ${{ vars.AGENT_DATABASE }}
+          AGENT_SCHEMA: ${{ vars.AGENT_SCHEMA }}

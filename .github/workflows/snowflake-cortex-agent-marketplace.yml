@@ -6,7 +6,7 @@ on:
       message:
         description: 'Agent prompt'
         required: false
-        default: 'ROLE:LEADER Provide a workforce status summary.'
+        default: 'ROLE:MANAGER Summarize employees who joined in the last 180 days. Provide aggregates and top 5 example employees.'
 
 permissions:
   contents: read
@@ -18,10 +18,12 @@ jobs:
       - name: Run Cortex Agent via published action
         uses: marcelinojackson-org/Snowflake.CortexAI.AgentAction@v1.0.0
         with:
-          agent-database: ${{ vars.AGENT_DATABASE }}
-          agent-schema: ${{ vars.AGENT_SCHEMA }}
           agent-name: ${{ vars.AGENT_NAME }}
           message: ${{ inputs.message }}
+          persist-results: true
+          persist-dir: ${{ runner.temp }}
         env:
           SNOWFLAKE_ACCOUNT_URL: ${{ vars.SNOWFLAKE_ACCOUNT_URL }}
           SNOWFLAKE_PAT: ${{ secrets.SNOWFLAKE_PAT || secrets.SNOWFLAKE_PASSWORD }}
+          AGENT_DATABASE: ${{ vars.AGENT_DATABASE }}
+          AGENT_SCHEMA: ${{ vars.AGENT_SCHEMA }}
