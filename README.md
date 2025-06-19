@@ -46,12 +46,12 @@ Both scripts assume this repo sits alongside `Snowflake.Common` and `Snowflake.R
 
 ### scripts/local-cortex-search.sh
 
-- Builds `../Snowflake.Common` and `../Snowflake.CortexAI.Search`, then runs the bundled Cortex Search action (`node dist/snowflake-cortex-search.js`) using your `SNOWFLAKE_ACCOUNT_URL`, `SNOWFLAKE_PAT`, `SEARCH_SERVICE`, and `SEARCH_QUERY` env vars.
+- Builds `../Snowflake.Common` and `../Snowflake.CortexAI.SearchAction`, then runs the bundled Cortex Search action (`node dist/snowflake-cortex-search.js`) using your `SNOWFLAKE_ACCOUNT_URL`, `SNOWFLAKE_PAT`, `SEARCH_SERVICE`, and `SEARCH_QUERY` env vars.
 - Usage:
 
   ```bash
   ./scripts/local-cortex-search.sh
-  CORTEX_REPO_DIR=~/dev/Snowflake.CortexAI.Search \
+  CORTEX_REPO_DIR=~/dev/Snowflake.CortexAI.SearchAction \
   SEARCH_SERVICE='SNOWFLAKE_SAMPLE_CORTEXAI_DB.SEARCH_DATA.CUSTOMER_REVIEW_SEARCH' \
   SEARCH_QUERY='Find orders with complaints about delivery' \
   ./scripts/local-cortex-search.sh

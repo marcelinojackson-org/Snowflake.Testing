@@ -3,7 +3,7 @@ set -euo pipefail
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 COMMON_REPO_DIR="${COMMON_REPO_DIR:-"$REPO_ROOT/../Snowflake.Common"}"
-CORTEX_REPO_DIR="${CORTEX_REPO_DIR:-"$REPO_ROOT/../Snowflake.CortexAI.Search"}"
+CORTEX_REPO_DIR="${CORTEX_REPO_DIR:-"$REPO_ROOT/../Snowflake.CortexAI.SearchAction"}"
 
 log() {
   printf "\n[%s] %s\n" "$(date '+%H:%M:%S')" "$*"
@@ -15,7 +15,7 @@ die() {
 }
 
 [[ -d "$COMMON_REPO_DIR" ]] || die "Cannot find Snowflake.Common at '$COMMON_REPO_DIR' (override with COMMON_REPO_DIR)."
-[[ -d "$CORTEX_REPO_DIR" ]] || die "Cannot find Snowflake.CortexAI.Search at '$CORTEX_REPO_DIR' (override with CORTEX_REPO_DIR)."
+[[ -d "$CORTEX_REPO_DIR" ]] || die "Cannot find Snowflake.CortexAI.SearchAction at '$CORTEX_REPO_DIR' (override with CORTEX_REPO_DIR)."
 
 REQUIRED_VARS=(
   SNOWFLAKE_ACCOUNT_URL
@@ -42,7 +42,7 @@ npm run build
 npm link
 popd >/dev/null
 
-log "Step 2/3: install + build Snowflake.CortexAI.Search"
+log "Step 2/3: install + build Snowflake.CortexAI.SearchAction"
 pushd "$CORTEX_REPO_DIR" >/dev/null
 npm install --no-audit --no-fund
 npm link @marcelinojackson-org/snowflake-common

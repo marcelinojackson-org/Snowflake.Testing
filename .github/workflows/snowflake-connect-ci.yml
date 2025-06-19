@@ -35,11 +35,11 @@ jobs:
           path: deps/Snowflake.RunSQLAction
           token: ${{ secrets.SNOWFLAKE_GITHUB_PAT }}
 
-      - name: Checkout Snowflake.CortexAI.Search
+      - name: Checkout Snowflake.CortexAI.SearchAction
         uses: actions/checkout@v4
         with:
-          repository: marcelinojackson-org/Snowflake.CortexAI.Search
-          path: deps/Snowflake.CortexAI.Search
+          repository: marcelinojackson-org/Snowflake.CortexAI.SearchAction
+          path: deps/Snowflake.CortexAI.SearchAction
           token: ${{ secrets.SNOWFLAKE_GITHUB_PAT }}
 
       - name: Configure git auth for private deps
@@ -54,7 +54,7 @@ jobs:
           cache-dependency-path: |
             deps/Snowflake.Common/package-lock.json
             deps/Snowflake.RunSQLAction/package-lock.json
-            deps/Snowflake.CortexAI.Search/package-lock.json
+            deps/Snowflake.CortexAI.SearchAction/package-lock.json
 
       - name: Run local integration harness
         run: ./scripts/local-integration-test.sh
@@ -75,7 +75,7 @@ jobs:
         run: ./scripts/local-cortex-search.sh
         env:
           COMMON_REPO_DIR: ${{ github.workspace }}/deps/Snowflake.Common
-          CORTEX_REPO_DIR: ${{ github.workspace }}/deps/Snowflake.CortexAI.Search
+          CORTEX_REPO_DIR: ${{ github.workspace }}/deps/Snowflake.CortexAI.SearchAction
           SNOWFLAKE_ACCOUNT_URL: ${{ vars.SNOWFLAKE_ACCOUNT_URL }}
           SNOWFLAKE_PAT: ${{ secrets.SNOWFLAKE_PAT || secrets.SNOWFLAKE_PASSWORD }}
           SEARCH_SERVICE: ${{ vars.SEARCH_SERVICE }}
