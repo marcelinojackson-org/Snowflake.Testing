@@ -56,3 +56,25 @@ Both scripts assume this repo sits alongside `Snowflake.Common` and `Snowflake.R
   SEARCH_QUERY='Find orders with complaints about delivery' \
   ./scripts/local-cortex-search.sh
   ```
+
+### scripts/local-cortex-analyst.sh
+
+- Builds `../Snowflake.Common` and `../Snowflake.CortexAI.AnalystAction`, then executes two scenarios with the bundled action:
+  1. **Semantic model run** – uses `SEMANTIC_MODEL_PATH` (defaults to `@"SNOWFLAKE_SAMPLE_CORTEXAI_DB"."HRANALYTICS"."SEMANTIC_MODELS_STAGE"/EMPLOYEE_DETAILS_WITHOUT_SALARY_SV.yaml`) and the question _“Explain the dataset.”_
+  2. **Semantic view run** – requires `SEMANTIC_VIEW_PATH` (no default) and enables advanced inputs (`ANALYST_ADVANCED_*`).
+- Required env: `SNOWFLAKE_ACCOUNT_URL`, `SNOWFLAKE_PAT`, `SEMANTIC_MODEL_PATH`, `SEMANTIC_VIEW_PATH`.
+- Optional overrides:
+  - `ANALYST_MESSAGE`, `ANALYST_INCLUDE_SQL`, `ANALYST_RESULT_FORMAT`, `ANALYST_TEMPERATURE`, `ANALYST_MAX_OUTPUT_TOKENS`
+  - `ANALYST_ADVANCED_MESSAGE`, `ANALYST_ADVANCED_INCLUDE_SQL`, `ANALYST_ADVANCED_RESULT_FORMAT`, `ANALYST_ADVANCED_TEMPERATURE`, `ANALYST_ADVANCED_MAX_OUTPUT_TOKENS`
+- Usage:
+
+  ```bash
+  export SEMANTIC_VIEW_PATH='SNOWFLAKE_SAMPLE_CORTEXAI_DB.HRANALYTICS.EMPLOYEE_DETAILS_WITHOUT_SALARY_SV'
+  ./scripts/local-cortex-analyst.sh
+
+  ANALYST_REPO_DIR=~/dev/Snowflake.CortexAI.AnalystAction \
+  SEMANTIC_MODEL_PATH='@"SNOWFLAKE_SAMPLE_CORTEXAI_DB"."HRANALYTICS"."SEMANTIC_MODELS_STAGE"/EMPLOYEE_DETAILS_WITHOUT_SALARY_SV.yaml' \
+  SEMANTIC_VIEW_PATH='SNOWFLAKE_SAMPLE_CORTEXAI_DB.HRANALYTICS.EMPLOYEE_DETAILS_WITHOUT_SALARY_SV' \
+  ANALYST_MESSAGE='Explain the dataset.' \
+  ./scripts/local-cortex-analyst.sh
+  ```

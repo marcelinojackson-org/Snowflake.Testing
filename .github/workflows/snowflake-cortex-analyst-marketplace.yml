@@ -1,0 +1,25 @@
+name: Snowflake Cortex Analyst Marketplace Check
+
+on:
+  workflow_dispatch:
+    inputs:
+      message:
+        description: 'Analyst prompt'
+        required: false
+        default: 'Explain the dataset.'
+
+permissions:
+  contents: read
+
+jobs:
+  cortex-analyst-marketplace:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run Cortex Analyst via published action
+        uses: marcelinojackson-org/Snowflake.CortexAI.AnalystAction@v0.1.0
+        with:
+          semantic-model-path: ${{ vars.SEMANTIC_MODEL_PATH }}
+          message: ${{ inputs.message }}
+        env:
+          SNOWFLAKE_ACCOUNT_URL: ${{ vars.SNOWFLAKE_ACCOUNT_URL }}
+          SNOWFLAKE_PAT: ${{ secrets.SNOWFLAKE_PAT || secrets.SNOWFLAKE_PASSWORD }}

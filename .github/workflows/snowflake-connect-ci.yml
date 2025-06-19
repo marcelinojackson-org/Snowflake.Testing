@@ -42,6 +42,13 @@ jobs:
           path: deps/Snowflake.CortexAI.SearchAction
           token: ${{ secrets.SNOWFLAKE_GITHUB_PAT }}
 
+      - name: Checkout Snowflake.CortexAI.AnalystAction
+        uses: actions/checkout@v4
+        with:
+          repository: marcelinojackson-org/Snowflake.CortexAI.AnalystAction
+          path: deps/Snowflake.CortexAI.AnalystAction
+          token: ${{ secrets.SNOWFLAKE_GITHUB_PAT }}
+
       - name: Configure git auth for private deps
         run: |
           git config --global url."https://x-access-token:${{ secrets.SNOWFLAKE_GITHUB_PAT }}@github.com/".insteadOf "https://github.com/"
@@ -55,6 +62,7 @@ jobs:
             deps/Snowflake.Common/package-lock.json
             deps/Snowflake.RunSQLAction/package-lock.json
             deps/Snowflake.CortexAI.SearchAction/package-lock.json
+            deps/Snowflake.CortexAI.AnalystAction/package-lock.json
 
       - name: Run local integration harness
         run: ./scripts/local-integration-test.sh
@@ -88,3 +96,18 @@ jobs:
           SEARCH_SCORE_THRESHOLD: ${{ vars.SEARCH_SCORE_THRESHOLD }}
           SEARCH_RERANKER: ${{ vars.SEARCH_RERANKER }}
           SEARCH_RANKING_PROFILE: ${{ vars.SEARCH_RANKING_PROFILE }}
+
+      - name: Run local Cortex Analyst harness
+        run: ./scripts/local-cortex-analyst.sh
+        env:
+          COMMON_REPO_DIR: ${{ github.workspace }}/deps/Snowflake.Common
+          ANALYST_REPO_DIR: ${{ github.workspace }}/deps/Snowflake.CortexAI.AnalystAction
+          SNOWFLAKE_ACCOUNT_URL: ${{ vars.SNOWFLAKE_ACCOUNT_URL }}
+          SNOWFLAKE_PAT: ${{ secrets.SNOWFLAKE_PAT || secrets.SNOWFLAKE_PASSWORD }}
+          SEMANTIC_MODEL_PATH: ${{ vars.SEMANTIC_MODEL_PATH }}
+          SEMANTIC_VIEW_PATH: ${{ vars.SEMANTIC_VIEW_PATH }}
+          ANALYST_MESSAGE: ${{ vars.ANALYST_MESSAGE }}
+          ANALYST_INCLUDE_SQL: ${{ vars.ANALYST_INCLUDE_SQL }}
+          ANALYST_RESULT_FORMAT: ${{ vars.ANALYST_RESULT_FORMAT }}
+          ANALYST_TEMPERATURE: ${{ vars.ANALYST_TEMPERATURE }}
+          ANALYST_MAX_OUTPUT_TOKENS: ${{ vars.ANALYST_MAX_OUTPUT_TOKENS }}
