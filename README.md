@@ -96,3 +96,24 @@ Both scripts assume this repo sits alongside `Snowflake.Common` and `Snowflake.R
   export SNOWFLAKE_PAT='***'
   ./scripts/local-cortex-agent.sh
   ```
+
+### scripts/local-aisql.sh
+
+- Builds `../Snowflake.Common` and `../Snowflake.AISQLAction`, then runs a basic pass across all AISQL functions using minimal inputs.
+- Required env: `SNOWFLAKE_ACCOUNT` or `SNOWFLAKE_ACCOUNT_URL`, `SNOWFLAKE_USER`, `SNOWFLAKE_PASSWORD` or `SNOWFLAKE_PRIVATE_KEY_PATH`, `SNOWFLAKE_ROLE`, `SNOWFLAKE_WAREHOUSE`, `SNOWFLAKE_DATABASE`, `SNOWFLAKE_SCHEMA`.
+- Optional: `AI_PARSE_DOCUMENT_FILE` (SQL file expression). If omitted, the script uses `TO_FILE('@docs/report.pdf')`.
+- If you see `User access disabled`, your Snowflake user/role or account does not have Cortex AI enabled.
+- Usage:
+
+  ```bash
+  ./scripts/local-aisql.sh
+
+  # override repo locations if needed
+  COMMON_REPO_DIR=~/dev/Snowflake.Common \
+  AISQL_REPO_DIR=~/dev/Snowflake.AISQLAction \
+  ./scripts/local-aisql.sh
+
+  # provide a file for AI_PARSE_DOCUMENT
+  AI_PARSE_DOCUMENT_FILE="TO_FILE('@docs/invoice.pdf')" \
+  ./scripts/local-aisql.sh
+  ```
