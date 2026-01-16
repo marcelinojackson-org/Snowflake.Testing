@@ -100,8 +100,17 @@ Both scripts assume this repo sits alongside `Snowflake.Common` and `Snowflake.R
 ### scripts/local-aisql.sh
 
 - Builds `../Snowflake.Common` and `../Snowflake.AISQLAction`, then runs a basic pass across all AISQL functions using minimal inputs.
+- Prerequisites:
+  - Cortex AI must be enabled for the account and your role/user.
+  - Required env vars (Snowflake connection + role) must be set before running.
+  - For AI_PARSE_DOCUMENT, the document must be staged in Snowflake and you must provide either a staged file path (`AI_PARSE_DOCUMENT_FILE`) or a SQL file object (`AI_PARSE_DOCUMENT_FILE_OBJECT`).
 - Required env: `SNOWFLAKE_ACCOUNT` or `SNOWFLAKE_ACCOUNT_URL`, `SNOWFLAKE_USER`, `SNOWFLAKE_PASSWORD` or `SNOWFLAKE_PRIVATE_KEY_PATH`, `SNOWFLAKE_ROLE`, `SNOWFLAKE_WAREHOUSE`, `SNOWFLAKE_DATABASE`, `SNOWFLAKE_SCHEMA`.
-- Optional: `AI_PARSE_DOCUMENT_FILE` (SQL file expression). If omitted, the script uses `TO_FILE('@docs/report.pdf')`.
+- Optional: `AI_PARSE_DOCUMENT_FILE` (staged file path like `@~/docs/invoice.pdf`), `AI_PARSE_DOCUMENT_FILE_OBJECT` (raw SQL file object like `TO_FILE('@~/docs/invoice.pdf')`), or legacy `AI_PARSE_DOCUMENT`.
+- Optional (advanced mode): `RUN_AISQL_ADVANCED=1` to run additional variants.
+- Optional (advanced mode file inputs): `AI_EXTRACT_FILE_OBJECT`, `AI_EMBED_INPUT_FILE_OBJECT`, `AI_SIMILARITY_INPUT1_FILE_OBJECT`, `AI_SIMILARITY_INPUT2_FILE_OBJECT`.
+- Optional (advanced mode config): `AI_CLASSIFY_CONFIG_OBJECT` (JSON object string).
+- Optional: `USE_CORTEX_NAMES=1` to run `SNOWFLAKE.CORTEX.*` function names when your account supports them.
+- The script skips AI_PARSE_DOCUMENT when given a local filesystem path (it expects staged files).
 - If you see `User access disabled`, your Snowflake user/role or account does not have Cortex AI enabled.
 - Usage:
 
@@ -116,4 +125,27 @@ Both scripts assume this repo sits alongside `Snowflake.Common` and `Snowflake.R
   # provide a file for AI_PARSE_DOCUMENT
   AI_PARSE_DOCUMENT_FILE="TO_FILE('@docs/invoice.pdf')" \
   ./scripts/local-aisql.sh
+
+  # run advanced variants
+  RUN_AISQL_ADVANCED=1 \
+  ./scripts/local-aisql.sh
   ```
+
+- Sample results (abbreviated):
+
+  | Function | Example result |
+  | --- | --- |
+  | `AI_COMPLETE` | `"This repository contains a collection of Python scripts..."` |
+  | `AI_EXTRACT` | `{"order_id":"18422","city":"Denver","date":"2024-02-01","amount":"$412.50"}` |
+  | `AI_SENTIMENT` | `{"categories":[{"name":"overall","sentiment":"mixed"}]}` |
+  | `AI_CLASSIFY` | `{"labels":["billing"]}` |
+  | `AI_COUNT_TOKENS` | `128` |
+  | `AI_EMBED` | `"[-0.008211,0.020005,...]"` |
+  | `AI_SIMILARITY` | `0.8151` |
+  | `SNOWFLAKE.CORTEX.SUMMARIZE` | `"This test script validates the AISQL action..."` |
+  | `AI_TRANSLATE` | `"Hola Mundo"` |
+  | `AI_PARSE_DOCUMENT` | `{"text":"...","tables":[...],"pages":[...]}` (when staged file provided) |
+
+- Advanced sample results (abbreviated):
+  - `AI_COMPLETE` with model params: `{"choices":[{"messages":"..."}],"usage":{"total_tokens":311}}`
+  - `AI_COUNT_TOKENS` with model name: `18`
